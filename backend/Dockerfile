@@ -1,19 +1,16 @@
-FROM node:22 AS builder
+FROM node:hydrogen-alpine
 
 WORKDIR /app
+
+COPY package.json .
+
+RUN npm install
 
 COPY . .
 
-RUN npm i
-
-FROM node:22-slim
-
-WORKDIR /app
-
-COPY --from=builder /app .
-
-COPY .env .env
+COPY .env .
 
 EXPOSE 5000
 
 CMD ["npm","start"]
+
