@@ -1,18 +1,18 @@
-FROM node:latest AS builder
+FROM node:22-slim AS builder
 
 WORKDIR /app
 
-COPY package.json .
+COPY . .
 
-RUN npm install
+RUN npm i
 
-FROM node:hydrogen-alpine AS final 
+FROM node:22-slim
 
 WORKDIR /app
 
 COPY --from=builder /app .
 
-COPY .env .   
+COPY .env .env
 
 EXPOSE 5000
 
