@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  mongodb:
+    image: "codesdocker/docker-mongo:v4.0"
+#    command: ["bin/bash", "-c", "mongoimport --host mongodb --db wanderlust --collection posts --file /data/sample_posts.json --jsonArray"] 
+#    container_name: "mongodb"
+    ports:
+      - "27017:27017"
+    networks:
+      - wanderlust
+    restart: always
+
+  backend:
+    image: "codesdocker/docker-backend:v1.0"
+#    container_name: "backend"
+    environment:
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/wanderlust
+      - CORS_ORIGIN=http://192.168.56.55:5173
+      - FRONTEND_URL=http://192.168.56.55:5173
+    ports:
+      - "5000:5000"
+    networks:
+      - wanderlust
+    restart: always
+
+  frontend:
+    image: "codesdocker/docker-frontend:v1.0"
+#    container_name: "frontend"
+    environment:
+      - VITE_API_PATH=http://192.168.56.55:5000
+    ports:
+      - "5173:5173"
+    networks:
+      - wanderlust
+    restart: always
+
+networks:
+  wanderlust:
+    name: "wand"
+    driver: bridge
